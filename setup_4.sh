@@ -10,6 +10,8 @@ source venv/bin/activate
 pip install aioli-sdk
 
 export AIOLI_CONTROLLER=http://localhost:$(kubectl get svc -n mlis aioli-master-service-mlis -o jsonpath='{.spec.ports[?(@.nodePort)].nodePort}')
+export AIOLI_USER=admin
+export AIOLI_PASS=HPE2024Password
 
 aioli r create huggingface --type openllm --secret-key $HF_TOKEN
 

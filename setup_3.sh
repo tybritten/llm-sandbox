@@ -66,7 +66,7 @@ EOF
 
 sudo microk8s kubectl create ns mlis
 
-sudo microk8s kubectl create secret docker-registry -n mlis my-registry-secret \
+sudo microk8s k create secret docker-registry -n aioli my-registry-secret \
 --docker-username="$DOCKER_USER" \
 --docker-password="$DOCKER_TOKEN"
 
@@ -102,10 +102,5 @@ sudo microk8s kubectl patch cm  -n knative-serving config-gc  --type=strategic \
 echo "All software is installed. If you wish to stop here, you can."
 echo "If you want to install the rag pipelines and starter models, run the next script setup_4.sh"
 echo "Before that you'll need to export the HF_TOKEN environment variable with your Hugging Face API token."
-echo "you'll also need to login with the aioli command line command."
-echo "to do that, you'll need to activate the python environment with the command 'source venv/bin/activate'"
-echo "next you'll also need to set the AIOLI_CONTROLLER environment variable to the address of the aioli controller."
-echo "do that by running export AIOLI_CONTROLLER=http://localhost:$(kubectl get svc -n mlis aioli-master-service-mlis -o jsonpath='{.spec.ports[?(@.nodePort)].nodePort}')"
-echo "now you can login wih the command 'aioli user login admin' and supply the password in setup_3.sh"
 echo "check the notes in setup_4.sh, you may need to adjust the configuration for different GPU types"
 echo "you can now run setup_4.sh"
