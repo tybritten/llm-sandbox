@@ -7,12 +7,12 @@ sudo snap install kubectl --classic
 IPADDR=$(ip -4 -j route | jq -r '.[] | select(.dst | contains("default")) | .prefsrc')
 
 mkdir -p .kube
-sudo chown -R ubuntu .kube
+sudo chown -R $USER .kube
 sudo usermod -a -G microk8s ubuntu
 sudo microk8s config > .kube/config
 
-curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.21.5 sh -./
-export PATH="$PATH:/home/ubuntu/istio-1.21.5/bin"
+curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.21.5 sh -
+export PATH="$PATH:/home/$USER/istio-1.21.5/bin"
 
 #enable microk8s addons metal lb and nvidia gpu operator
 sudo microk8s.enable metallb:$IPADDR-$IPADDR
