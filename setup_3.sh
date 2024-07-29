@@ -66,7 +66,7 @@ EOF
 
 sudo microk8s kubectl create ns mlis
 
-sudo microk8s k create secret docker-registry -n aioli my-registry-secret \
+sudo microk8s kubectl create secret docker-registry -n aioli my-registry-secret \
 --docker-username="$DOCKER_USER" \
 --docker-password="$DOCKER_TOKEN"
 
