@@ -4,6 +4,9 @@ if [[ -z "${HF_TOKEN}" ]]; then
   exit 1
 fi
 
+set -e
+set -x
+
 export PUBLIC_DNS=$(curl -s http://icanhazip.com).nip.io
 
 source venv/bin/activate

@@ -1,5 +1,4 @@
 #!/bin/bash
-
 if [[ -z "${MINIO_KEY}" ]]; then
   echo "MINIO_KEY is undefined"
   exit 1
@@ -7,6 +6,9 @@ elif [[ -z "${MINIO_SECRET}" ]]; then
   echo "MINIO_SECRET is undefined"
   exit 1
 fi
+
+set -e
+set -x
 
 sudo microk8s kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.15.1/cert-manager.yaml
 
@@ -98,7 +100,7 @@ sudo microk8s helm3 install open-webui open-webui/open-webui -n open-webui --cre
 sudo microk8s kubectl patch cm  -n knative-serving config-gc  --type=strategic \
       -p '{"data":{"min-non-active-revisions":"0", "max-non-active-revisions": "0", "retain-since-create-time": "disabled","retain-since-last-active-time": "disabled"}}'
 
-
+set +x
 echo "All software is installed. If you wish to stop here, you can."
 echo "If you want to install the rag pipelines and starter models, run the next script setup_4.sh"
 echo "Before that you'll need to export the HF_TOKEN environment variable with your Hugging Face API token."
