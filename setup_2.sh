@@ -1,4 +1,7 @@
 #!/bin/bash
+set -e
+set -x
+
 #install microk8s
 sudo snap install microk8s --channel=1.29/stable --classic
 sudo microk8s status --wait-ready
@@ -11,8 +14,10 @@ sudo chown -R $USER .kube
 sudo usermod -a -G microk8s ubuntu
 sudo microk8s config > .kube/config
 
+pushd $HOME  # Ensure that istio installs into the users HOME
 curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.21.5 sh -
 export PATH="$PATH:/home/$USER/istio-1.21.5/bin"
+popd
 
 #enable microk8s addons metal lb and nvidia gpu operator
 sudo microk8s.enable metallb:$IPADDR-$IPADDR
@@ -27,6 +32,7 @@ sudo microk8s helm3 repo update
 sudo microk8s enable core/mayastor --default-pool-size 100G 
 sudo microk8s enable minio -c 50Gi -s mayastor
 
+set +x
 echo "Add the Minio username and pasword to the environment variables"
 echo "also add the MLDM enterprise license key to the environment variables"
 echo "as well as a docker user and token that can access the MLIS containers"
