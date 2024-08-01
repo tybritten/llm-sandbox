@@ -6,6 +6,12 @@ elif [[ -z "${MINIO_SECRET}" ]]; then
   echo "MINIO_SECRET is undefined"
   exit 1
 fi
+if [[ ! -d "$PWD/aioli" ]]; then
+	echo "Could not find Aioli directory here ${PWD}/aioli. Have you downloaded and extracted the helm chart?" 1>&2
+    exit 1
+fi
+
+MLIS_NAMESPACE="mlis"
 
 set -e
 set -x
@@ -24,8 +30,8 @@ sudo microk8s kubectl apply -f https://github.com/knative/net-istio/releases/dow
 sudo microk8s kubectl run -n minio-operator mc --restart=Never --image=minio/mc --command -- /bin/sh -c 'while true; do sleep 5s; done'
 sleep 5
 sudo microk8s kubectl exec -n minio-operator --stdin --tty mc -- mc alias set microk8s http://minio:80 $MINIO_KEY $MINIO_SECRET
-sudo microk8s kubectl exec -n minio-operator --stdin --tty mc -- mc mb microk8s/pach
-sudo microk8s kubectl exec -n minio-operator --stdin --tty mc -- mc mb microk8s/models
+sudo microk8s kubectl exec -n minio-operator --stdin --tty mc -- mc mb -p microk8s/pach
+sudo microk8s kubectl exec -n minio-operator --stdin --tty mc -- mc mb -p microk8s/models
 sudo microk8s kubectl delete pod -n minio-operator mc
 
 export PUBLIC_DNS=$(curl -s http://icanhazip.com).nip.io
@@ -49,7 +55,7 @@ pachd:
       secret: "$MINIO_SECRET"
 EOF
 
-sudo microk8s helm3 install mldm pach/pachyderm -f mldm-values.yaml
+sudo microk8s helm3 upgrade -i mldm pach/pachyderm -f mldm-values.yaml
 
 
 sudo microk8s kubectl apply -f https://github.com/kserve/kserve/releases/download/v0.13.0/kserve.yaml
@@ -66,11 +72,37 @@ proxy:
   type: NodePort
 EOF
 
-sudo microk8s kubectl create ns mlis
 
-sudo microk8s kubectl create secret docker-registry -n aioli my-registry-secret \
---docker-username="$DOCKER_USER" \
---docker-password="$DOCKER_TOKEN"
+# Create mlis Name space
+set +e +x
+OUT=$(sudo microk8s kubectl create ns "${MLIS_NAMESPACE}" 2>&1)
+RETCODE=$?
+if [[ $RETCODE -ne 0 ]]; then
+	if [[ "${OUT}" == *"AlreadyExists"* ]]; then
+		echo "Namespace '${MLIS_NAMESPACE}' already exists. Continuing"
+	else
+		echo "Create namespace failed: ${OUT}" 1>&2
+	fi
+fi
+set -e -x
+
+
+# (Re)Create secret
+set +e +x
+SECRET_NAME="my-registry-secret"
+sudo microk8s kubectl describe secret -n "${MLIS_NAMESPACE}" "${SECRET_NAME}" > /dev/null
+RETCODE=$?
+if [[ $RETCODE == 0 ]]; then
+	echo "secret \"${SECRET_NAME}\" already exists, removing."
+	sudo microk8s kubectl delete secret -n "${MLIS_NAMESPACE}" "${SECRET_NAME}" ||
+		(echo "Failed to delete secret" && exit 1)
+fi
+sudo microk8s kubectl create secret docker-registry -n "${MLIS_NAMESPACE}" "${SECRET_NAME}" \
+	--docker-username="${DOCKER_USER}" \
+	--docker-password="${DOCKER_TOKEN}" ||
+    (echo "Failed to create secret!" 1>&2 && exit 1)
+set -e -x
+
 
 cat > config-domain.yaml << EOF
 apiVersion: v1
@@ -87,13 +119,13 @@ metadata:
 EOF
 
 # install mlis
-sudo microk8s helm3 install mlis aioli/ -n mlis -f mlis-values.yaml
+sudo microk8s helm3 upgrade -i mlis aioli/ -n "${MLIS_NAMESPACE}" -f mlis-values.yaml
 
 # set the external domain for knative/mlis
 sudo microk8s kubectl apply -f config-domain.yaml
 
 # install open-webui
-sudo microk8s helm3 install open-webui open-webui/open-webui -n open-webui --create-namespace --set ollama.enabled=false --set pipelines.enabled=false --set service.type=NodePort
+sudo microk8s helm3 upgrade -i open-webui open-webui/open-webui -n open-webui --create-namespace --set ollama.enabled=false --set pipelines.enabled=false --set service.type=NodePort
 
 # patch for knative serving garbage collection for MLIS
 
