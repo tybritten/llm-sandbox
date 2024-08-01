@@ -24,10 +24,13 @@ aioli m create Meta-Llama-3-8B-Instruct --format openllm --url openllm://meta-ll
 
 # create embedding image. Please pick the right image based on your GPU type:
 # https://github.com/huggingface/text-embeddings-inference?tab=readme-ov-file#docker-images
-aioli m create bge-large-en-v1.5 --format custom --image ghcr.io/huggingface/text-embeddings-inference:1.5 \
+T4_IMAGE="ghcr.io/huggingface/text-embeddings-inference:turing-1.5"
+A100_IMAGE="ghcr.io/huggingface/text-embeddings-inference:1.5"
+H100_IMAGE="ghcr.io/huggingface/text-embeddings-inference:hopper-1.5"
+aioli m create bge-large-en-v1.5 --format custom --image "${A100_IMAGE}" \
   --requests-gpu 1 --limits-gpu 1 -e HF_API_TOKEN=$HF_TOKEN --arg=--model-id -a BAAI/bge-large-en-v1.5
 
-aioli d create --model bge-large-en-v1.5 --namespace mlis embedding  --autoscaling-min-replica 1 --autoscaling-max-replica 1
+aioli d create --model bge-large-en-v1.5 --namespace mlis embed  --autoscaling-min-replica 1 --autoscaling-max-replica 1
 aioli d create --model Meta-Llama-3-8B-Instruct --namespace mlis llama3  --autoscaling-min-replica 1 --autoscaling-max-replica 1
 
 curl -o /tmp/pachctl.deb -L https://github.com/pachyderm/pachyderm/releases/download/v2.10.7/pachctl_2.10.7_amd64.deb && sudo dpkg -i /tmp/pachctl.deb
