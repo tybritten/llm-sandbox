@@ -9,8 +9,10 @@ set -x
 
 export PUBLIC_DNS=$(curl -s http://icanhazip.com).nip.io
 
+AIOLI_CHART=$(sudo microk8s helm3 ls -A --filter mlis --output json | jq -r '.[0].chart')
+
 source venv/bin/activate
-pip install aioli-sdk
+pip install aioli-sdk==${AIOLI_CHART:6}
 
 export AIOLI_CONTROLLER=http://localhost:$(kubectl get svc -n mlis aioli-master-service-mlis -o jsonpath='{.spec.ports[?(@.nodePort)].nodePort}')
 export AIOLI_USER=admin
