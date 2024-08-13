@@ -19,11 +19,14 @@ set -x
 sudo microk8s kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.15.1/cert-manager.yaml
 
 export PATH="$PATH:/home/ubuntu/istio-1.21.5/bin"
+mkdir -p ~/.kube
+sudo microk8s config > ~/.kube/config
 istioctl install -y
 
 sudo microk8s kubectl apply -f https://github.com/knative/serving/releases/download/knative-v1.13.1/serving-crds.yaml
 
 sudo microk8s kubectl apply -f https://github.com/knative/serving/releases/download/knative-v1.13.1/serving-core.yaml
+sleep 5
 sudo microk8s kubectl apply -f https://github.com/knative/net-istio/releases/download/knative-v1.13.1/net-istio.yaml
 
 
