@@ -39,6 +39,6 @@ pachctl connect http://localhost:30080
 
 pachctl create repo documents
 
-pachctl create pipeline --jsonnet https://raw.githubusercontent.com/tybritten/rag-pdf/main/pipelines/templates/parse.jsonnet --arg input_repo=documents --arg mldm_base_url=http://$PUBLIC_DNS:30080
-pachctl create pipeline --jsonnet https://raw.githubusercontent.com/tybritten/rag-pdf/main/pipelines/templates/embed.jsonnet --arg input_repo=documents --arg mldm_base_url=http://$PUBLIC_DNS:30080
-pachctl create pipeline --jsonnet https://raw.githubusercontent.com/tybritten/rag-pdf/main/pipelines/templates/ui.jsonnet --arg input_repo=documents --arg mldm_base_url=http://$PUBLIC_DNS:30080
+pachctl create pipeline --jsonnet https://raw.githubusercontent.com/tybritten/rag-pdf/main/pipelines/templates/parse.jsonnet --arg input_repo=documents
+pachctl create pipeline --jsonnet https://raw.githubusercontent.com/tybritten/rag-pdf/main/pipelines/templates/embed.jsonnet
+pachctl create pipeline --jsonnet https://raw.githubusercontent.com/tybritten/rag-pdf/main/pipelines/templates/ui.jsonnet --arg mldm_base_url=http://$PUBLIC_DNS:30080
