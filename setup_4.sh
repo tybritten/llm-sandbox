@@ -35,7 +35,7 @@ aioli m create bge-large-en-v1.5 --format custom --image "${A100_IMAGE}" \
 aioli d create --model bge-large-en-v1.5 --namespace mlis embed  --autoscaling-min-replica 1 --autoscaling-max-replica 1
 aioli d create --model Meta-Llama-3-8B-Instruct --namespace mlis llama3  --autoscaling-min-replica 1 --autoscaling-max-replica 1
 
-PACH_VERSION=$(sudo microk8s helm3 ls --filter mldm --output json | jq -r '.[0].app_version')
+PACH_VERSION=$(sudo microk8s helm3 ls -A --filter mldm --output json | jq -r '.[0].app_version')
 
 curl -o /tmp/pachctl.deb -L https://github.com/pachyderm/pachyderm/releases/download/v${PACH_VERSION}/pachctl_${PACH_VERSION}_amd64.deb && sudo dpkg -i /tmp/pachctl.deb
 
