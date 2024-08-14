@@ -1,23 +1,15 @@
 #!/bin/bash
-if [[ -z "${MINIO_KEY}" ]]; then
-  echo "MINIO_KEY is undefined"
-  exit 1
-elif [[ -z "${MINIO_SECRET}" ]]; then
-  echo "MINIO_SECRET is undefined"
-  exit 1
-fi
 if [[ -z "${MSC_EMAIL}" ]]; then
-  echo "MSC_EMAIL is undefined. This should be the email you use to access MSC"
+  echo "MSC_EMAIL is undefined. This should be your docker username"
   exit 1
 elif [[ -z "${MLIS_LICENSE_KEY}" ]]; then
-  echo "MLIS_LICENSE_KEY is undefined. This should be your MLIS License Key from MSC"
-  exit 1
-elif [[ -z "${MLIS_SKU}" ]]; then
-  echo "MLIS_SKU is undefined. This should be the MLIS SKU in MSC."
+  echo "MLIS_LICENSE_KEY is undefined. This should be your docker token"
   exit 1
 fi
-
-MLIS_NAMESPACE="mlis"
+if [[ ! -d "$PWD/aioli" ]]; then
+	echo "Could not find Aioli directory here ${PWD}/aioli. Have you downloaded and extracted the helm chart?" 1>&2
+    exit 1
+fi
 
 set -e
 set -x
@@ -33,14 +25,9 @@ if [[ $RETCODE == 0 ]]; then
 		(echo "Failed to delete secret" && exit 1)
 fi
 sudo microk8s kubectl create secret docker-registry -n "${MLIS_NAMESPACE}" "${SECRET_NAME}" \
-  --docker-server=hub.myenterpriselicense.hpe.com/hpe-mlis/${MLIS_SKU,,} \
-  --docker-email="${MSC_EMAIL}" \
 	--docker-username="${MSC_EMAIL}" \
 	--docker-password="${MLIS_LICENSE_KEY}" ||
     (echo "Failed to create secret!" 1>&2 && exit 1)
-
-sudo microk8s helm3 registry login hub.myenterpriselicense.hpe.com --username ${MSC_EMAIL} --password ${MLIS_LICENSE_KEY}
-sudo microk8s helm3 repo update
 set -e -x
 
 
@@ -59,8 +46,7 @@ metadata:
 EOF
 
 # install mlis
-sudo microk8s helm3 upgrade -i mlis oci://hub.myenterpriselicense.hpe.com/hpe-mlis/${MLIS_SKU,,}/aioli -n "${MLIS_NAMESPACE}" -f mlis-values.yaml
-
+sudo microk8s helm3 upgrade -i mlis aioli/ -n "${MLIS_NAMESPACE}" -f mlis-values.yaml
 
 # set the external domain for knative/mlis
 sudo microk8s kubectl apply -f config-domain.yaml
