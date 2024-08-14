@@ -43,6 +43,9 @@ sudo microk8s helm3 registry login hub.myenterpriselicense.hpe.com --username ${
 sudo microk8s helm3 repo update
 set -e -x
 
+if [[ -z "${PUBLIC_DNS}" ]]; then
+	export PUBLIC_DNS=$(curl -s http://icanhazip.com).nip.io
+fi
 
 cat > config-domain.yaml << EOF
 apiVersion: v1
@@ -59,7 +62,7 @@ metadata:
 EOF
 
 # install mlis
-sudo microk8s helm3 upgrade -i mlis oci://hub.myenterpriselicense.hpe.com/hpe-mlis/${MLIS_SKU,,}/aioli -n "${MLIS_NAMESPACE}" -f mlis-values.yaml
+sudo microk8s helm3 upgrade -i mlis oci://hub.myenterpriselicense.hpe.com/hpe-mlis/${MLIS_SKU,,}/aioli -n "${MLIS_NAMESPACE}" -f mlis-values.yaml --set imageRegistry=hub.myenterpriselicense.hpe.com/hpe-mlis/${MLIS_SKU,,}
 
 
 # set the external domain for knative/mlis
