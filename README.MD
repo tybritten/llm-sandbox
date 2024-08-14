@@ -27,7 +27,8 @@ in the scripts I use <publicip>.nip.io for a PUBLIC_DNS var, you'll want to edit
 
 Available:
 * http://<PUBLIC_DNS>:30080 - MLDM
+* http://<PUBLIC_DNS>:30081 - OpenWebUI
 * http://<PUBLIC_DNS>:<PORT>> - MLIS (you'll need to check the nodeport in use with `kubectl get svc -n mlis aioli-master-service-mlis -o jsonpath='{.spec.ports[?(@.nodePort)].nodePort}'`)
-* http://<PUBLIC_DNS>:<PORT> - OpenWebUI (you'll need to check the nodeport in use with `kubectl get svc -n open-webui open-webuis -o jsonpath='{.spec.ports[?(@.nodePort)].nodePort}'`)
+
 
 You can add models to openweb ui using the internal dns names (`http://<deploymentname>.mlis.svc.cluster.local/`)

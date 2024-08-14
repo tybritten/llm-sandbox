@@ -90,9 +90,13 @@ if [[ $RETCODE -ne 0 ]]; then
 fi
 set -e -x
 
+sudo microk8s helm3 upgrade -i open-webui open-webui/open-webui -n open-webui --create-namespace \
+    --set ollama.enabled=false --set pipelines.enabled=false --set service.type=NodePort --set servive.nodePort=30081
 
 set +x
-echo "MLDM is installed as well as the prerequisites for MLIS."
+echo "OpenWebUI and MLDM are installed as well as the prerequisites for MLIS."
+echo "you can reach the UI of MLDM at http://${PUBLIC_DNS}:30080"
+echo "you can reach the UI of OpenWebUI at http://${PUBLIC_DNS}:30081"
 echo "To install MLIS, you'll need a a MSC license key, MLIS SKU from MSC, and your MLIS license key and email"
 echo "before running the next script setup_4.sh"
 echo "if you do not have MSC access for MLIS but have the chart downloaded and extracted at aioli/ and docker repo access,"

@@ -59,8 +59,10 @@ sudo microk8s helm3 upgrade -i open-webui open-webui/open-webui -n open-webui --
 sudo microk8s kubectl patch cm  -n knative-serving config-gc  --type=strategic \
       -p '{"data":{"min-non-active-revisions":"0", "max-non-active-revisions": "0", "retain-since-create-time": "disabled","retain-since-last-active-time": "disabled"}}'
 
+MLIS_PORT=$(kubectl get svc -n mlis aioli-master-service-mlis -o jsonpath='{.spec.ports[?(@.nodePort)].nodePort}')
 set +x
 echo "All software is installed. If you wish to stop here, you can."
+echo "you can reach the UI of MLIS at http://${PUBLIC_DNS}:${MLIS_PORT}"
 echo "If you want to install the rag pipelines and starter models, run the next script setup_4.sh"
 echo "Before that you'll need to export the HF_TOKEN environment variable with your Hugging Face API token."
 echo "check the notes in setup_5.sh, you may need to adjust the configuration for different GPU types"
