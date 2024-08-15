@@ -7,7 +7,10 @@ sudo snap install microk8s --channel=1.29/stable --classic
 sudo microk8s status --wait-ready
 sudo snap install kubectl --classic
 
-IPADDR=$(ip -4 -j route | jq -r '.[] | select(.dst | contains("default")) | .prefsrc')
+
+if [[ -z "${IPADDR}" ]]; then
+	export IPADDR=$(ip -4 -j route | jq -r '.[] | select(.dst | contains("default")) | .prefsrc')
+fi
 
 mkdir -p ~/.kube
 sudo chown -R $USER ~/.kube
