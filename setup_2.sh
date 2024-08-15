@@ -43,7 +43,7 @@ echo "also add the MLDM enterprise license key to the environment variables"
 echo "export MLDM_LICENSE_KEY=\"<mldm license_key>\""
 echo ""
 echo "set PUBLIC_DNS to the dns name for the server. you can also use <ip address>.nip.io."
-echo "export PULBIC_DNS=\"<dns name>\""
+echo "export PUBLIC_DNS=\"<dns name>\""
 echo ""
 echo "you can now run setup_3.sh"
 
