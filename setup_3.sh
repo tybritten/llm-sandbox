@@ -22,12 +22,12 @@ istioctl install -y
 sudo microk8s kubectl apply -f https://github.com/knative/serving/releases/download/knative-v1.13.1/serving-crds.yaml
 
 sudo microk8s kubectl apply -f https://github.com/knative/serving/releases/download/knative-v1.13.1/serving-core.yaml
-sleep 5
+sleep 10
 sudo microk8s kubectl apply -f https://github.com/knative/net-istio/releases/download/knative-v1.13.1/net-istio.yaml
 
 
 sudo microk8s kubectl run -n minio-operator mc --restart=Never --image=minio/mc --command -- /bin/sh -c 'while true; do sleep 5s; done'
-sleep 5
+sleep 10
 sudo microk8s kubectl exec -n minio-operator --stdin --tty mc -- mc alias set microk8s http://minio:80 $MINIO_KEY $MINIO_SECRET
 sudo microk8s kubectl exec -n minio-operator --stdin --tty mc -- mc mb -p microk8s/pach
 sudo microk8s kubectl exec -n minio-operator --stdin --tty mc -- mc mb -p microk8s/models
