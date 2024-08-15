@@ -14,7 +14,7 @@ set -x
 
 sudo microk8s kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.15.1/cert-manager.yaml
 
-export PATH="$PATH:/home/ubuntu/istio-1.21.5/bin"
+export PATH="$PATH:/home/$USER/istio-1.21.5/bin"
 mkdir -p ~/.kube
 sudo microk8s config > ~/.kube/config
 istioctl install -y
