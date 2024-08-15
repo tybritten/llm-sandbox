@@ -29,6 +29,7 @@ aioli m create Meta-Llama-3-8B-Instruct --format openllm --url openllm://meta-ll
 T4_IMAGE="ghcr.io/huggingface/text-embeddings-inference:turing-1.5"
 A100_IMAGE="ghcr.io/huggingface/text-embeddings-inference:1.5"
 H100_IMAGE="ghcr.io/huggingface/text-embeddings-inference:hopper-1.5"
+L40S_IMAGE="ghcr.io/huggingface/text-embeddings-inference:89-1.5"
 aioli m create bge-large-en-v1.5 --format custom --image "${A100_IMAGE}" \
   --requests-gpu 1 --limits-gpu 1 -e HF_API_TOKEN=$HF_TOKEN --arg=--model-id -a BAAI/bge-large-en-v1.5 --arg=--auto-truncate
 

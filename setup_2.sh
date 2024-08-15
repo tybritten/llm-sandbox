@@ -9,10 +9,10 @@ sudo snap install kubectl --classic
 
 IPADDR=$(ip -4 -j route | jq -r '.[] | select(.dst | contains("default")) | .prefsrc')
 
-mkdir -p .kube
-sudo chown -R $USER .kube
-sudo usermod -a -G microk8s ubuntu
-sudo microk8s config > .kube/config
+mkdir -p ~/.kube
+sudo chown -R $USER ~/.kube
+sudo usermod -a -G microk8s $USER
+sudo microk8s config > ~/.kube/config
 
 pushd $HOME  # Ensure that istio installs into the users HOME
 curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.21.5 sh -
