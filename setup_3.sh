@@ -99,7 +99,7 @@ echo "To install MLIS, you'll need a a MSC license key, MLIS SKU from MSC, and y
 echo "before running the next script setup_4.sh"
 echo "if you do not have MSC access for MLIS but have the chart downloaded and extracted at aioli/ and docker repo access,"
 echo "export your docker username as MSC_EMAIL and your token as MLIS_LICENSE_KEY and"
-echo "run the script setup__docker.sh"
+echo "run the script setup_4_docker.sh"
 echo "export MSC_EMAIL=\"<email address>\""
 echo "export MLIS_LICENSE_KEY=\"<license key>\""
 echo "export MLIS_SKU=\"<MLIS SKU>\""
