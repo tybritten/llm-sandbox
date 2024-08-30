@@ -20,8 +20,8 @@ export AIOLI_PASS=HPE2024Password
 
 aioli r create huggingface --type openllm --secret-key $HF_TOKEN
 
-aioli m create Meta-Llama-3-8B-Instruct --format openllm --url openllm://meta-llama/Meta-Llama-3-8B \
-  --registry huggingface --requests-gpu 1 --limits-gpu 1
+aioli m create Meta-Llama-3.1-8B-Instruct --format custom --image "vllm/vllm-openai:latest" \
+  --requests-gpu 1 --limits-gpu 1 --limits-memory 30Gi -e HUGGING_FACE_HUB_TOKEN=$HF_TOKEN -e AIOLI_DISABLE_LOGGER=true --arg=--model -a meta-llama/Meta-Llama-3.1-70B-Instruct --arg=--port -a 8080
 
 
 # create embedding image. Please pick the right image based on your GPU type:
@@ -30,11 +30,12 @@ T4_IMAGE="ghcr.io/huggingface/text-embeddings-inference:turing-1.5"
 A100_IMAGE="ghcr.io/huggingface/text-embeddings-inference:1.5"
 H100_IMAGE="ghcr.io/huggingface/text-embeddings-inference:hopper-1.5"
 L40S_IMAGE="ghcr.io/huggingface/text-embeddings-inference:89-1.5"
-aioli m create bge-large-en-v1.5 --format custom --image "${A100_IMAGE}" \
+A4_IMAGE="ghcr.io/huggingface/text-embeddings-inference:86-1.5"
+aioli m create bge-large-en-v1.5 --format custom --image "${L40S_IMAGE}" \
   --requests-gpu 1 --limits-gpu 1 -e HF_API_TOKEN=$HF_TOKEN --arg=--model-id -a BAAI/bge-large-en-v1.5 --arg=--auto-truncate
 
 aioli d create --model bge-large-en-v1.5 --namespace mlis embed  --autoscaling-min-replica 1 --autoscaling-max-replica 1
-aioli d create --model Meta-Llama-3-8B-Instruct --namespace mlis llama3  --autoscaling-min-replica 1 --autoscaling-max-replica 1
+aioli d create --model Meta-Llama-3.1-8B-Instruct --namespace mlis llama3  --autoscaling-min-replica 1 --autoscaling-max-replica 1
 
 PACH_VERSION=$(sudo microk8s helm3 ls -A --filter mldm --output json | jq -r '.[0].app_version')
 

@@ -67,6 +67,8 @@ sudo microk8s kubectl apply -f https://github.com/kserve/kserve/releases/downloa
 
 cat << 'EOF' > mlis-values.yaml
 defaultPassword: HPE2024Password
+master:
+  disable_validation: true
 global:
   imagePullSecrets:
   - name: my-registry-secret
