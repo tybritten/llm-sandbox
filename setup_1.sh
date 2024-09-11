@@ -25,4 +25,8 @@ echo 'nvme-tcp' | sudo tee -a /etc/modules-load.d/microk8s-mayastor.conf
 #install nvidia drivers
 sudo ubuntu-drivers install
 
-sudo reboot
+echo "Please Reboot to finish driver installation"
+echo "After Reboot, run setup_2.sh"
+echo "to deploy storage not on the root / disk"
+echo "mount the desired storage drive to /var/snap/microk8s/common"
+echo "before running the next script. You'll have to create the microk8s and common directories"

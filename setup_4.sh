@@ -69,14 +69,14 @@ sudo microk8s helm3 upgrade -i mlis oci://hub.myenterpriselicense.hpe.com/hpe-ml
 sudo microk8s kubectl apply -f config-domain.yaml
 
 # install open-webui
-sudo microk8s helm3 upgrade -i open-webui open-webui/open-webui -n open-webui --create-namespace --set ollama.enabled=false --set pipelines.enabled=false --set service.type=NodePort
+sudo microk8s helm3 upgrade -i open-webui open-webui/open-webui -n open-webui --create-namespace --set ollama.enabled=false --set service.type=NodePort
 
 # patch for knative serving garbage collection for MLIS
 
 sudo microk8s kubectl patch cm  -n knative-serving config-gc  --type=strategic \
       -p '{"data":{"min-non-active-revisions":"0", "max-non-active-revisions": "0", "retain-since-create-time": "disabled","retain-since-last-active-time": "disabled"}}'
 
-MLIS_PORT=$(kubectl get svc -n mlis aioli-master-service-mlis -o jsonpath='{.spec.ports[?(@.nodePort)].nodePort}')
+MLIS_PORT=$(kubectl get svc -n mlis aioli-proxy  -o jsonpath='{.spec.ports[?(@.nodePort)].nodePort}')
 set +x
 echo "All software is installed. If you wish to stop here, you can."
 echo "you can reach the UI of MLIS at http://${PUBLIC_DNS}:${MLIS_PORT}"

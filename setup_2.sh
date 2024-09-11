@@ -46,4 +46,3 @@ echo "set PUBLIC_DNS to the dns name for the server. you can also use <ip addres
 echo "export PUBLIC_DNS=\"<dns name>\""
 echo ""
 echo "you can now run setup_3.sh"
-
