@@ -29,6 +29,7 @@ sudo microk8s enable nvidia --gpu-operator-driver host
 # add open webui and mldm helm repos
 sudo microk8s helm3 repo add open-webui https://helm.openwebui.com/
 sudo microk8s helm3 repo add pach http://helm.pachyderm.com
+sudo microk8s helm3 repo add jupyterhub https://hub.jupyter.org/helm-chart/
 sudo microk8s helm3 repo update
 
 #enable mayastor and minio
@@ -36,10 +37,8 @@ sudo microk8s enable core/mayastor --default-pool-size 100G
 sudo microk8s enable minio -c 50Gi -s mayastor
 
 set +x
-echo "Add the Minio username and pasword to the environment variables"
-echo "export MINIO_KEY=\"<username>\""
-echo "export MINIO_SECRET=\"<password>\""
-echo "also add the MLDM enterprise license key to the environment variables"
+
+echo "add the MLDM enterprise license key to the environment variables"
 echo "export MLDM_LICENSE_KEY=\"<mldm license_key>\""
 echo ""
 echo "set PUBLIC_DNS to the dns name for the server. you can also use <ip address>.nip.io."
