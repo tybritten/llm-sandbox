@@ -1,6 +1,7 @@
 
 #!/bin/bash
 
+sudo microk8s helm3 repo add jupyterhub https://hub.jupyter.org/helm-chart/
 
 cat << 'EOF' > juypter-values.yaml
 proxy:
