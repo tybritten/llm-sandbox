@@ -1,5 +1,4 @@
 #!/bin/bash
-if [[ -z "${MINIO_KEY}" ]]; then
 
 MINIO_KEY='minio'
 MINIO_SECRET='minio123'
